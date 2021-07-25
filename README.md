@@ -75,7 +75,8 @@ If successful you will receive...
 ## CAll #1 - Pulling a user's creatures
 
 #### Sample call
-``{ "key":"YOUR_KEY_HERE", "action":"lab", "var":"username" }``
+```json
+{ "key":"YOUR_KEY_HERE", "action":"lab", "var":"username" }```
 
 #### Response
 Case 1: User does not exist
