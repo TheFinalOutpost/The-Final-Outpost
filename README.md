@@ -66,7 +66,7 @@ If successful you will receive...
 | 3 | No growing creatures |
 | 4 | Creature does not exists |
 
-## CAll #1 - Pulling a user's creatures
+## Call #1 - Pulling a user's creatures
 
 #### Sample call
 ```json
@@ -130,7 +130,7 @@ Case 3: Valid use with growing creatures
 }
 ```
 
-## CAll #2 - Validating a Creature
+## Call #2 - Validating a Creature
 #### Sample call
 ```json
 {
