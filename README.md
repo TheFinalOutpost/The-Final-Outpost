@@ -1,197 +1,207 @@
 # The Final Outpost API
 
-## Applying for access
-
-You can send a request to admin@finaloutpost.net.  Please include your TFO username, the reason you want to access the API, the name of your site, and the IP address of your site.
+## Applying For Access
 
 ## General Requirements
+The API is available at ``https://finaloutpost.net/api/v1``.  You need a private key to access it, which is provided after applying for access. All API calls must originate from an HTTPS domain.
 
-You will receive the URL needed to call the API along with your private key.
+If you are displaying creature images on your site, please only use the image URL provided by the API as it is a static cached image and much less resource intensive for us.
 
-All methods must be sent using POST. For security reasons, API calls are only valid from HTTPS domains.
+## Processing A Request
+The API will return any request with a JSON formatted array.  See ``/resources`` in this repo to find provided Error enums in PHP and typescript.
 
-The API should only be used to ping once. Please store the individual creature data on your server and don’t ping the site for every page load. Make sure when you display the image on your site that you use the URL provided by the API (https://finaloutpost.net/s/creatureCode.png). /rimg/ and /r/ are dynamic urls for internal use only while as /s/ is a image cache file that will will much faster for you and use less resources for me
+## End Points
+### Fetching information about a single creature
+End point
+```
+GET: https://finaloutpost.net/api/v1/creature/{code}
+```
 
-## Sending a request
-
-You need to send two variables in addition to your key.
-
- - **Action**
-	 - lab
-		 -  Used to both validate a user and to return the user's growing creatures.
-	 - creature
-		 -  Used to both validate a creature as well as view information about it.
-	 - multipleCreatures
-		 - Used to both validate multiple creatures.
- - **Var**
-	 -  If using the lab call, username expected.
-	 - If using the creature calls either a code or a list of codes expcted. See individual calls for more info.
-
-## Processing a request
-The API will return any request with a JSON formatted array.
-
-### Return
-If the return is not a valid creature or user you will receive the following...
-|Key|Value  |
-|--|--|
-|  error|(bool) true  |
-|errorCode|(int)|
-
-If successful you will receive...
-
-|Key|Value|
-|--|--|
-| error | (bool) false  |
-| errorCode | (int) 0 |
-|*and then for every creature*|
-| Code| (string) |
-| Imgsrc | (string) |
-| Gotten | (int) timestamp |
-| Name | (string) |
-| GrowthLevel | (int) |
-
-### Growth Level Key
-|Key|Value|
-|--|--|
-| 1 | Capsule |
-| 2 | Juvenile |
-| 3 | Adult |
-
-### Error Key
-|Key| Value |
-|--|--|
-| 0 | No error |
-| 1 | User not found |
-| 2 | User's lab is hidden|
-| 3 | No growing creatures |
-| 4 | Creature does not exists |
-
-## Call #1 - Pulling a user's creatures
-
-#### Sample call
+Response
 ```json
 {
-  "key": "YOUR_KEY_HERE",
-  "action": "lab",
-  "var": "username"
+    "error": bool,
+    "errorCode": int,
+    "code": string,
+    "imgsrc": string,
+    "gotten": int,
+    "growthLevel": int,
+    "name": string,
+    "isStunted": bool,
+    "breedName": string,
+    "genetics": string,
+    "gender": string
 }
 ```
 
-#### Response
-Case 1: User does not exist
+### Fetching information about multiple creatures
+End point
+```
+GET: https://finaloutpost.net/api/v1/creatures/?code[]=codeA&code[]=codeB&code[]codeC
+```
+
+Response
 ```json
 {
-  "error": true,
-  "errorCode": 1
+    "error": bool,
+    "errorCode": int,
+    "creatures": [
+        {
+            "error": bool,
+            "errorCode": int,
+            "code": string,
+            "imgsrc": string,
+            "gotten": int,
+            "growthLevel": int,
+            "name": string,
+            "isStunted": bool,
+            "breedName": string,
+            "genetics": string,
+            "gender": string
+        },
+        {
+           "error": bool,
+           "errorCode": int,
+           "code": string,
+           "imgsrc": string,
+           "gotten": int,
+           "growthLevel": int,
+           "name": string,
+           "isStunted": bool,
+           "breedName": string,
+           "genetics": string,
+           "gender": string
+        },
+        etc
+    ]
 }
 ```
 
-Case 2: Valid user, no growing creatures
+### Fetching All Creatures of Defined Species By Username
+End point
+```
+GET: https://finaloutpost.net/api/v1/creatures/species/{username}/{speciesName}
+```
+
+Response
 ```json
 {
-  "error": true,
-  "errorCode": 3
+  "error": bool,
+  "errorCode": int,
+  "creatures": [
+    {
+      "error": bool,
+      "errorCode": int,
+      "code": string,
+      "imgsrc": string,
+      "gotten": int,
+      "growthLevel": int,
+      "name": string,
+      "isStunted": bool,
+      "breedName": string,
+      "genetics": string,
+      "gender": string
+    },
+    {
+      "error": bool,
+      "errorCode": int,
+      "code": string,
+      "imgsrc": string,
+      "gotten": int,
+      "growthLevel": int,
+      "name": string,
+      "isStunted": bool,
+      "breedName": string,
+      "genetics": string,
+      "gender": string
+    },
+    etc
+  ]
+}
+```
+### Fetching All Growing Creatures By Username
+End point
+```
+GET: https://finaloutpost.net/api/v1/lab/{username}
+```
+
+Response
+```json
+{
+  "error": bool,
+  "errorCode": int,
+  "creatures": [
+    {
+      "error": bool,
+      "errorCode": int,
+      "code": string,
+      "imgsrc": string,
+      "gotten": int,
+      "growthLevel": int,
+      "name": string,
+      "isStunted": bool,
+      "breedName": string,
+      "genetics": string,
+      "gender": string
+    },
+    {
+      "error": bool,
+      "errorCode": int,
+      "code": string,
+      "imgsrc": string,
+      "gotten": int,
+      "growthLevel": int,
+      "name": string,
+      "isStunted": bool,
+      "breedName": string,
+      "genetics": string,
+      "gender": string
+    },
+    etc
+  ]
 }
 ```
 
-Case 3: Valid use with growing creatures
-```json
-{
-  "0": {
-    "code": "nuiLE",
-    "imgsrc": "https:\\/\\/finaloutpost.net\\/s\\/nuiLE.png",
-    "gotten": "1589053720",
-    "name": "Unnamed",
-    "growthLevel": "2"
-  },
-  "1": {
-    "code": "aXlvE",
-    "imgsrc": "https:\\/\\/finaloutpost.net\\/s\\/aXlvE.png",
-    "gotten": "1589143090",
-    "name": "Unnamed",
-    "growthLevel": "2"
-  },
-  "2": {
-    "code": "6bMDs",
-    "imgsrc": "https:\\/\\/finaloutpost.net\\/s\\/6bMDs.png",
-    "gotten": "1589163235",
-    "name": "Unnamed",
-    "growthLevel": "2"
-  },
-  "3": {
-    "code": "wATyL",
-    "imgsrc": "https:\\/\\/finaloutpost.net\\/s\\/wATyL.png",
-    "gotten": "1589169539",
-    "name": "Unnamed",
-    "growthLevel": "2"
-  },
-  "error": false,
-  "errorCode": 0
-}
+### Fetching All Creatures By Tab
+Please note that username is an optional param, but it **must** be supplied if you are trying to access the default tab.
+
+End point:
+``` 
+GET: https://finaloutpost.net/api/v1/tab/{tabId}/{username?}
 ```
-
-## Call #2 - Validating a Creature
-#### Sample call
+Response
 ```json
 {
-  "key": "YOUR_KEY_HERE",
-  "action": "creature",
-  "var": "code"
-}
-```
-
-#### Responses
-
-Case 1: Creature does not exist
-```json
-{
-  "error": true,
-  "errorCode": 4
-}
-```
-
-Case 2: Valid creature
-```json
-{
-  "0": {
-    "code": "cysFg",
-    "imgsrc": "https:\\/\\/finaloutpost.net\\/s\\/cysFg.png",
-    "Gotten": "1589221075",
-    "name": "Unnamed",
-    "growthLevel": "2",
-    "isStunted": false,
-    "breedName": "Foo",
-    "genetics": "Body:AaBb, Marking:AaBb, Tail:Aa"
-  },
-  "error": false,
-  "errorCode": 0
-}
-```
-
-## Call #3 - Validating Multiple Creatures
-#### Sample call
-```json
-{
-  "key": "YOUR_KEY_HERE",
-  "action": "multipleCreatures",
-  "var": "code1,code2,code3"
-}
-```
-
-#### Response
-```json
-{
-  "0": {
-    "error": false,
-    "code": "PKxey",
-    "growthLevel": 1,
-    "isStunted": false
-  },
-  "1": {
-    "error": false,
-    "code": "e86yx",
-    "growthLevel": 1,
-    "isStunted": false
-  }
+  "error": bool,
+  "errorCode": int,
+  "creatures": [
+    {
+      "error": bool,
+      "errorCode": int,
+      "code": string,
+      "imgsrc": string,
+      "gotten": int,
+      "growthLevel": int,
+      "name": string,
+      "isStunted": bool,
+      "breedName": string,
+      "genetics": string,
+      "gender": string
+    },
+    {
+      "error": bool,
+      "errorCode": int,
+      "code": string,
+      "imgsrc": string,
+      "gotten": int,
+      "growthLevel": int,
+      "name": string,
+      "isStunted": bool,
+      "breedName": string,
+      "genetics": string,
+      "gender": string
+    },
+    etc
+  ]
 }
 ```
